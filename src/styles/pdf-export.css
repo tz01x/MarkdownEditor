@@ -1,0 +1,280 @@
+/**
+ * Print-friendly CSS for PDF export
+ * Implements Task 8: PDF Export System styling
+ */
+
+/* PDF Export Styles */
+@media print {
+  * {
+    -webkit-print-color-adjust: exact !important;
+    color-adjust: exact !important;
+    print-color-adjust: exact !important;
+  }
+
+  body {
+    margin: 0 !important;
+    padding: 0 !important;
+    background: white !important;
+    color: black !important;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif !important;
+    line-height: 1.6 !important;
+  }
+
+  /* Hide UI elements that shouldn't appear in PDF */
+  .editor-container,
+  .monaco-editor,
+  .sidebar,
+  .header,
+  .view-mode-toggle,
+  .theme-toggle,
+  .download-button,
+  .save-button,
+  .backup-button,
+  .new-file-button,
+  .file-actions,
+  .file-item-actions,
+  .recent-files,
+  .empty-state,
+  .backup-modal,
+  .modal-overlay {
+    display: none !important;
+  }
+
+  /* Show only the markdown preview content */
+  .markdown-preview {
+    display: block !important;
+    width: 100% !important;
+    max-width: none !important;
+    margin: 0 !important;
+    padding: 20px !important;
+    background: white !important;
+    color: black !important;
+    font-size: 12pt !important;
+    line-height: 1.6 !important;
+  }
+
+  /* Typography for PDF */
+  .markdown-preview h1 {
+    font-size: 24pt !important;
+    font-weight: bold !important;
+    margin: 24pt 0 12pt 0 !important;
+    page-break-after: avoid !important;
+    color: #000 !important;
+  }
+
+  .markdown-preview h2 {
+    font-size: 20pt !important;
+    font-weight: bold !important;
+    margin: 20pt 0 10pt 0 !important;
+    page-break-after: avoid !important;
+    color: #000 !important;
+  }
+
+  .markdown-preview h3 {
+    font-size: 16pt !important;
+    font-weight: bold !important;
+    margin: 16pt 0 8pt 0 !important;
+    page-break-after: avoid !important;
+    color: #000 !important;
+  }
+
+  .markdown-preview h4 {
+    font-size: 14pt !important;
+    font-weight: bold !important;
+    margin: 14pt 0 7pt 0 !important;
+    page-break-after: avoid !important;
+    color: #000 !important;
+  }
+
+  .markdown-preview h5 {
+    font-size: 12pt !important;
+    font-weight: bold !important;
+    margin: 12pt 0 6pt 0 !important;
+    page-break-after: avoid !important;
+    color: #000 !important;
+  }
+
+  .markdown-preview h6 {
+    font-size: 11pt !important;
+    font-weight: bold !important;
+    margin: 11pt 0 5pt 0 !important;
+    page-break-after: avoid !important;
+    color: #000 !important;
+  }
+
+  .markdown-preview p {
+    margin: 0 0 12pt 0 !important;
+    text-align: justify !important;
+    color: #000 !important;
+  }
+
+  .markdown-preview ul,
+  .markdown-preview ol {
+    margin: 12pt 0 !important;
+    padding-left: 24pt !important;
+    color: #000 !important;
+  }
+
+  .markdown-preview li {
+    margin: 6pt 0 !important;
+    color: #000 !important;
+  }
+
+  .markdown-preview blockquote {
+    margin: 12pt 24pt !important;
+    padding: 12pt !important;
+    border-left: 4pt solid #ccc !important;
+    background: #f9f9f9 !important;
+    color: #000 !important;
+    page-break-inside: avoid !important;
+  }
+
+  .markdown-preview code {
+    font-family: 'Courier New', Courier, monospace !important;
+    font-size: 10pt !important;
+    background: #f5f5f5 !important;
+    padding: 2pt 4pt !important;
+    border-radius: 2pt !important;
+    color: #000 !important;
+  }
+
+  .markdown-preview pre {
+    font-family: 'Courier New', Courier, monospace !important;
+    font-size: 10pt !important;
+    background: #f5f5f5 !important;
+    padding: 12pt !important;
+    border-radius: 4pt !important;
+    margin: 12pt 0 !important;
+    overflow: visible !important;
+    white-space: pre-wrap !important;
+    word-wrap: break-word !important;
+    page-break-inside: avoid !important;
+    color: #000 !important;
+  }
+
+  .markdown-preview pre code {
+    background: none !important;
+    padding: 0 !important;
+    color: #000 !important;
+  }
+
+  .markdown-preview table {
+    width: 100% !important;
+    border-collapse: collapse !important;
+    margin: 12pt 0 !important;
+    page-break-inside: avoid !important;
+  }
+
+  .markdown-preview th,
+  .markdown-preview td {
+    border: 1pt solid #000 !important;
+    padding: 6pt 8pt !important;
+    text-align: left !important;
+    color: #000 !important;
+  }
+
+  .markdown-preview th {
+    background: #f0f0f0 !important;
+    font-weight: bold !important;
+  }
+
+  .markdown-preview img {
+    max-width: 100% !important;
+    height: auto !important;
+    margin: 12pt 0 !important;
+    page-break-inside: avoid !important;
+    display: block !important;
+  }
+
+  .markdown-preview hr {
+    border: none !important;
+    border-top: 1pt solid #000 !important;
+    margin: 24pt 0 !important;
+    page-break-after: avoid !important;
+  }
+
+  .markdown-preview a {
+    color: #000 !important;
+    text-decoration: underline !important;
+  }
+
+  .markdown-preview strong {
+    font-weight: bold !important;
+    color: #000 !important;
+  }
+
+  .markdown-preview em {
+    font-style: italic !important;
+    color: #000 !important;
+  }
+
+  /* Page breaks */
+  .markdown-preview h1,
+  .markdown-preview h2,
+  .markdown-preview h3 {
+    page-break-before: auto !important;
+    page-break-after: avoid !important;
+  }
+
+  .markdown-preview h4,
+  .markdown-preview h5,
+  .markdown-preview h6 {
+    page-break-before: avoid !important;
+    page-break-after: avoid !important;
+  }
+
+  .markdown-preview p {
+    page-break-inside: avoid !important;
+    orphans: 3 !important;
+    widows: 3 !important;
+  }
+
+  .markdown-preview ul,
+  .markdown-preview ol {
+    page-break-inside: avoid !important;
+  }
+
+  /* Ensure content fits on page */
+  .markdown-preview {
+    max-width: 100% !important;
+    overflow: visible !important;
+  }
+}
+
+/* PDF-specific class for when generating PDFs */
+.pdf-export-mode {
+  position: fixed !important;
+  top: -9999px !important;
+  left: -9999px !important;
+  width: 210mm !important; /* A4 width */
+  min-height: 297mm !important; /* A4 height */
+  background: white !important;
+  color: black !important;
+  font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', 'Roboto', 'Oxygen', 'Ubuntu', 'Cantarell', 'Fira Sans', 'Droid Sans', 'Helvetica Neue', sans-serif !important;
+  font-size: 12pt !important;
+  line-height: 1.6 !important;
+  padding: 20mm !important;
+  box-sizing: border-box !important;
+  overflow: visible !important;
+  z-index: -1 !important;
+}
+
+/* Ensure markdown content in PDF export mode is properly styled */
+.pdf-export-mode .markdown-content {
+  font-size: 12pt !important;
+  line-height: 1.6 !important;
+  color: black !important;
+  background: white !important;
+}
+
+.pdf-export-mode .markdown-preview {
+  display: block !important;
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  background: white !important;
+  color: black !important;
+  font-size: 12pt !important;
+  line-height: 1.6 !important;
+}
