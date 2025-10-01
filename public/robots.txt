@@ -1,0 +1,15 @@
+# robots.txt for Markdown Editor
+
+# Allow all crawlers
+User-agent: *
+Allow: /
+
+# Disallow crawling of API routes (if any)
+Disallow: /api/
+
+# Crawl-delay
+Crawl-delay: 0
+
+# Sitemap location
+Sitemap: https://your-domain.com/sitemap.xml
+
