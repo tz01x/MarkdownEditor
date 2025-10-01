@@ -15,7 +15,7 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  metadataBase: new URL("https://your-domain.com"), // Replace with your actual domain
+  metadataBase: new URL("https://markdown-editor-indol.vercel.app"),
   title: {
     default: "Markdown Editor - Free Online Markdown Editor with Live Preview",
     template: "%s | Markdown Editor",
@@ -39,9 +39,9 @@ export const metadata: Metadata = {
     "code editor",
     "documentation editor",
   ],
-  authors: [{ name: "Your Name" }], // Replace with your name
-  creator: "Your Name", // Replace with your name
-  publisher: "Your Name", // Replace with your name
+  authors: [{ name: "tumzied" }],
+  creator: "tumzied",
+  publisher: "tumzied",
   formatDetection: {
     email: false,
     address: false,
@@ -50,7 +50,7 @@ export const metadata: Metadata = {
   openGraph: {
     type: "website",
     locale: "en_US",
-    url: "https://your-domain.com", // Replace with your actual domain
+    url: "https://markdown-editor-indol.vercel.app",
     title: "Markdown Editor - Free Online Markdown Editor with Live Preview",
     description:
       "Free online markdown editor with live preview, PDF export, syntax highlighting, and dark mode. Create, edit, and export markdown files with ease.",
@@ -70,7 +70,7 @@ export const metadata: Metadata = {
     description:
       "Free online markdown editor with live preview, PDF export, syntax highlighting, and dark mode.",
     images: ["/og-image.png"], // You'll need to create this image
-    creator: "@yourusername", // Replace with your Twitter handle
+    creator: "@ar_tumzied",
   },
   robots: {
     index: true,
@@ -90,7 +90,7 @@ export const metadata: Metadata = {
   },
   manifest: "/manifest.json",
   alternates: {
-    canonical: "https://your-domain.com", // Replace with your actual domain
+    canonical: "https://markdown-editor-indol.vercel.app",
   },
   category: "technology",
 };
@@ -106,7 +106,7 @@ export default function RootLayout({
     name: "Markdown Editor",
     description:
       "Free online markdown editor with live preview, PDF export, syntax highlighting, and dark mode.",
-    url: "https://your-domain.com", // Replace with your actual domain
+    url: "https://markdown-editor-indol.vercel.app",
     applicationCategory: "ProductivityApplication",
     operatingSystem: "Web Browser",
     offers: {
@@ -130,7 +130,7 @@ export default function RootLayout({
     softwareVersion: "1.0.0",
     author: {
       "@type": "Person",
-      name: "Your Name", // Replace with your name
+      name: "tumzied",
     },
   };
 

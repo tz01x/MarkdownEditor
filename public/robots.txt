@@ -11,5 +11,5 @@ Disallow: /api/
 Crawl-delay: 0
 
 # Sitemap location
-Sitemap: https://your-domain.com/sitemap.xml
+Sitemap: https://markdown-editor-indol.vercel.app/sitemap.xml
 

@@ -1,7 +1,7 @@
 {
-  "name": "Markdown Editor - Free Online Editor with Live Preview",
+  "name": "Markdown Editor by tumzied - Free Online Editor with Live Preview",
   "short_name": "MD Editor",
-  "description": "Free online markdown editor with live preview, PDF export, and syntax highlighting",
+  "description": "Free online markdown editor with live preview, PDF export, and syntax highlighting by tumzied",
   "start_url": "/",
   "display": "standalone",
   "background_color": "#ffffff",
