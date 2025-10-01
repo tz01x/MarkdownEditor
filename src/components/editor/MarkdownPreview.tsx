@@ -18,6 +18,27 @@ const md = new MarkdownIt({
   breaks: true,
 });
 
+// Add custom renderer for headings to include IDs for TOC navigation
+md.renderer.rules.heading_open = (tokens, idx) => {
+  const token = tokens[idx];
+  const level = token.tag;
+  const nextToken = tokens[idx + 1];
+  
+  if (nextToken && nextToken.type === 'inline' && nextToken.content) {
+    // Create slug from heading content
+    const slug = nextToken.content
+      .toLowerCase()
+      .replace(/[^a-z0-9\s-]/g, '')
+      .replace(/\s+/g, '-')
+      .replace(/-+/g, '-')
+      .trim();
+    
+    return `<${level} id="${slug || 'heading'}">`;
+  }
+  
+  return `<${level}>`;
+};
+
 const MarkdownPreview = forwardRef<HTMLDivElement, MarkdownPreviewProps>(({
   content,
   className = '',

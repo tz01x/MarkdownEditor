@@ -190,6 +190,8 @@ body {
   margin-top: 1.5em;
   margin-bottom: 0.5em;
   line-height: 1.25;
+  /* Add scroll padding for TOC navigation */
+  scroll-margin-top: 1rem;
 }
 
 .markdown-content h1 {

@@ -3,7 +3,6 @@
  * Handles PDF generation from sanitized HTML content
  */
 
-import html2pdf from 'html2pdf.js';
 
 export interface PDFGenerationOptions {
   filename: string;
@@ -45,6 +44,11 @@ export class BackgroundPDFGenerator {
   }
 
   async generatePDF(sanitizedContent: string, options: PDFGenerationOptions): Promise<{ success: boolean; error?: string; blob?: Blob }> {
+    if (typeof window === "undefined") return { success: false, error: 'PDF generation not supported in server environment' }; // prevent server execution
+    const html2pdf = (await import("html2pdf.js")).default;
+
+
+
     if (this.isGenerating) {
       return { success: false, error: 'PDF generation already in progress' };
     }
@@ -75,11 +79,11 @@ export class BackgroundPDFGenerator {
 
       // Configure html2pdf options
       const pdfOptions = {
-        margin: options.margin?.top || 20,
+        // margin: options.margin?.top || 20,
         filename: `${options.filename}.pdf`,
-        image: { type: 'jpeg', quality: options.quality || 0.98 },
+        // image: { type: 'jpeg', quality: options.quality || 0.98 },
         html2canvas: { 
-          scale: options.scale || 2,
+          scale:  4,
           useCORS: true,
           allowTaint: true,
           backgroundColor: '#ffffff',

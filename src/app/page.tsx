@@ -141,6 +141,7 @@ function MarkdownEditor() {
         <MainContent
           viewMode={viewMode}
           onViewModeChange={handleViewModeChange}
+          content={currentFile?.content || ''}
         >
           {currentFile ? (
             <EditorContainer
