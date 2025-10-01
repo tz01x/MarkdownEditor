@@ -7,6 +7,8 @@ import MainContent from '@/components/layout/MainContent';
 import EditorContainer from '@/components/editor/EditorContainer';
 import { Card, CardContent } from '@/components/ui/Card';
 import BackupRestoreModal from '@/components/ui/BackupRestoreModal';
+import FilePreviewModal from '@/components/ui/FilePreviewModal';
+import DragDropZone from '@/components/ui/DragDropZone';
 import { ToastContainer } from '@/components/ui/Toast';
 import { FileProvider, useFiles } from '@/contexts/FileContext';
 import { usePreferences } from '@/contexts/PreferencesContext';
@@ -21,6 +23,7 @@ function MarkdownEditor() {
     selectFile,
     deleteFile,
     importFile,
+    importMultipleFiles,
     saveFile,
     exportFile,
     exportAllFiles,
@@ -35,6 +38,9 @@ function MarkdownEditor() {
   const { preferences, updatePreferences } = usePreferences();
   const [viewMode, setViewMode] = useState<'editor' | 'preview' | 'split'>(preferences.viewMode);
   const [showBackupModal, setShowBackupModal] = useState(false);
+  const [showFilePreview, setShowFilePreview] = useState(false);
+  const [previewFiles, setPreviewFiles] = useState<Array<{ file: File; content: string }>>([]);
+  const [isFullscreen, setIsFullscreen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
   // Update view mode when preferences change
@@ -112,36 +118,75 @@ function MarkdownEditor() {
     }
   };
 
+  const handleFilesDropped = async (droppedFiles: File[]) => {
+    if (droppedFiles.length === 0) return;
+
+    // Read all files
+    const filePreviewPromises = droppedFiles.map(file => {
+      return new Promise<{ file: File; content: string }>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          const content = e.target?.result as string;
+          resolve({ file, content });
+        };
+        reader.onerror = () => reject(new Error(`Failed to read ${file.name}`));
+        reader.readAsText(file);
+      });
+    });
+
+    try {
+      const previews = await Promise.all(filePreviewPromises);
+      setPreviewFiles(previews);
+      setShowFilePreview(true);
+    } catch (error) {
+      console.error('Failed to read files:', error);
+    }
+  };
+
+  const handleImportFiles = async (filesToImport: Array<{ file: File; content: string }>) => {
+    const files = filesToImport.map(fp => fp.file);
+    await importMultipleFiles(files);
+    setShowFilePreview(false);
+    setPreviewFiles([]);
+  };
+
   return (
     <div className="h-screen flex flex-col main-layout">
-      <Header
-        onNewFile={handleNewFile}
-        onSave={handleSave}
-        onDownload={handleDownload}
-        onDownloadPDF={handleDownloadPDF}
-        onBackup={() => setShowBackupModal(true)}
-        fileName={currentFile?.name}
-        onRename={handleRenameCurrent}
-        isExportingPDF={isExportingPDF}
-        pdfProgress={pdfProgress}
-      />
+      {/* Hide header in fullscreen mode */}
+      {!isFullscreen && (
+        <Header
+          onNewFile={handleNewFile}
+          onSave={handleSave}
+          onDownload={handleDownload}
+          onDownloadPDF={handleDownloadPDF}
+          onBackup={() => setShowBackupModal(true)}
+          fileName={currentFile?.name}
+          onRename={handleRenameCurrent}
+          isExportingPDF={isExportingPDF}
+          pdfProgress={pdfProgress}
+        />
+      )}
       
       <div className="flex flex-1 min-h-0 main-content-wrapper">
-        <Sidebar
-          files={files}
-          currentFileId={currentFileId}
-          onFileSelect={handleFileSelect}
-          onNewFile={handleNewFile}
-          onDeleteFile={handleDeleteFile}
-          onImportFile={handleImportFile}
-          onRenameFile={(fileId, newName) => renameFile(fileId, newName)}
-          onDownloadAll={handleDownloadAll}
-        />
+        {/* Hide sidebar in fullscreen mode */}
+        {!isFullscreen && (
+          <Sidebar
+            files={files}
+            currentFileId={currentFileId}
+            onFileSelect={handleFileSelect}
+            onNewFile={handleNewFile}
+            onDeleteFile={handleDeleteFile}
+            onImportFile={handleImportFile}
+            onRenameFile={(fileId, newName) => renameFile(fileId, newName)}
+            onDownloadAll={handleDownloadAll}
+          />
+        )}
         
         <MainContent
           viewMode={viewMode}
           onViewModeChange={handleViewModeChange}
           content={currentFile?.content || ''}
+          onFullscreenChange={setIsFullscreen}
         >
           {currentFile ? (
             <EditorContainer
@@ -153,29 +198,36 @@ function MarkdownEditor() {
             />
           ) : (
             <div className="h-full flex items-center justify-center p-8">
-              <Card className="w-full max-w-2xl">
-                <CardContent className="p-8 text-center">
-                  <h2 className="text-2xl font-bold mb-4">Welcome to Markdown Editor</h2>
-                  <p className="text-muted-foreground mb-6">
-                    A modern, feature-rich markdown editor with live preview and export capabilities.
-                  </p>
-                  <div className="space-y-2 text-sm text-muted-foreground">
-                    <p>• Create and edit markdown files</p>
-                    <p>• Live preview with syntax highlighting</p>
-                    <p>• Export to PDF and markdown formats</p>
-                    <p>• Dark and light theme support</p>
-                    <p>• Responsive design for all devices</p>
-                  </div>
-                  <div className="mt-8">
-                    <button
-                      onClick={handleNewFile}
-                      className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-8"
-                    >
-                      Get Started
-                    </button>
-                  </div>
-                </CardContent>
-              </Card>
+              <div className="w-full max-w-3xl space-y-8">
+                <Card className="w-full">
+                  <CardContent className="p-8 text-center">
+                    <h2 className="text-2xl font-bold mb-4">Welcome to Markdown Editor</h2>
+                    <p className="text-muted-foreground mb-6">
+                      A modern, feature-rich markdown editor with live preview and export capabilities.
+                    </p>
+                    <div className="space-y-2 text-sm text-muted-foreground">
+                      <p>• Create and edit markdown files</p>
+                      <p>• Live preview with syntax highlighting</p>
+                      <p>• Export to PDF and markdown formats</p>
+                      <p>• Dark and light theme support</p>
+                      <p>• Drag & drop file upload</p>
+                    </div>
+                    <div className="mt-8">
+                      <button
+                        onClick={handleNewFile}
+                        className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-10 px-8"
+                      >
+                        Get Started
+                      </button>
+                    </div>
+                  </CardContent>
+                </Card>
+
+                <DragDropZone
+                  onFilesSelected={handleFilesDropped}
+                  multiple={true}
+                />
+              </div>
             </div>
           )}
         </MainContent>
@@ -194,6 +246,17 @@ function MarkdownEditor() {
       <BackupRestoreModal
         isOpen={showBackupModal}
         onClose={() => setShowBackupModal(false)}
+      />
+
+      {/* File Preview Modal */}
+      <FilePreviewModal
+        isOpen={showFilePreview}
+        onClose={() => {
+          setShowFilePreview(false);
+          setPreviewFiles([]);
+        }}
+        files={previewFiles}
+        onImport={handleImportFiles}
       />
       
       {/* Toast Notifications */}

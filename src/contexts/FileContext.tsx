@@ -32,6 +32,7 @@ interface FileContextType {
   saveFile: (id: string) => void;
   saveAllFiles: () => void;
   importFile: (file: File) => Promise<void>;
+  importMultipleFiles: (files: File[]) => Promise<void>;
   exportFile: (id: string) => Promise<void>;
   exportAllFiles: () => Promise<void>;
   exportToPDF: (id: string, options?: Partial<PDFOptions>) => Promise<void>;
@@ -209,6 +210,53 @@ export function FileProvider({ children }: { children: React.ReactNode }) {
       reader.onerror = () => reject(new Error('Failed to read file'));
       reader.readAsText(file);
     });
+  };
+
+  const importMultipleFiles = async (files: File[]): Promise<void> => {
+    const importPromises = files.map(file => {
+      return new Promise<FileItem>((resolve, reject) => {
+        const reader = new FileReader();
+        reader.onload = (e) => {
+          try {
+            const content = e.target?.result as string;
+            const newFile: FileItem = {
+              id: `${Date.now()}-${Math.random().toString(36).substr(2, 9)}`,
+              name: file.name,
+              content,
+              lastModified: new Date(),
+              isDirty: false,
+            };
+            resolve(newFile);
+          } catch (error) {
+            reject(error);
+          }
+        };
+        reader.onerror = () => reject(new Error(`Failed to read file: ${file.name}`));
+        reader.readAsText(file);
+      });
+    });
+
+    try {
+      const newFiles = await Promise.all(importPromises);
+      setFiles(prev => [...prev, ...newFiles]);
+      // Select the first imported file
+      if (newFiles.length > 0) {
+        setCurrentFileId(newFiles[0].id);
+      }
+      addToast({
+        type: 'success',
+        title: 'Files Imported',
+        description: `Successfully imported ${newFiles.length} file${newFiles.length !== 1 ? 's' : ''}`,
+      });
+    } catch (error) {
+      console.error('Failed to import files:', error);
+      addToast({
+        type: 'error',
+        title: 'Import Failed',
+        description: 'Failed to import some files',
+      });
+      throw error;
+    }
   };
 
   const exportFile = async (id: string) => {
@@ -452,6 +500,7 @@ export function FileProvider({ children }: { children: React.ReactNode }) {
         saveFile,
         saveAllFiles,
         importFile,
+        importMultipleFiles,
         exportFile,
         exportAllFiles,
         exportToPDF,

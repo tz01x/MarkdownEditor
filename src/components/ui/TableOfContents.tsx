@@ -1,7 +1,8 @@
 'use client';
 
 import { useMemo } from 'react';
-import { List, ChevronRight } from 'lucide-react';
+import { List, ChevronRight, X } from 'lucide-react';
+import Modal from './Modal';
 
 interface TocItem {
   id: string;
@@ -12,22 +13,19 @@ interface TocItem {
 
 interface TableOfContentsProps {
   content: string;
+  isOpen: boolean;
+  onClose: () => void;
   className?: string;
-  onItemClick?: (slug: string) => void;
 }
 
 export default function TableOfContents({ 
   content, 
+  isOpen,
+  onClose,
   className = '',
-  onItemClick 
 }: TableOfContentsProps) {
   const tocItems = useMemo(() => {
-    console.log('TOC Content:', content);
-    console.log('TOC Content type:', typeof content);
-    console.log('TOC Content length:', content?.length);
-    
     if (!content) {
-      console.log('No content provided to TOC');
       return [];
     }
     
@@ -35,10 +33,7 @@ export default function TableOfContents({
     const lines = content.split('\n');
     let idCounter = 0;
 
-    console.log('TOC Lines:', lines);
-    console.log('TOC Lines count:', lines.length);
-
-    lines.forEach((line, index) => {
+    lines.forEach((line) => {
       // Trim the line to remove any leading/trailing whitespace
       const trimmedLine = line.trim();
       
@@ -47,7 +42,6 @@ export default function TableOfContents({
       const match = trimmedLine.match(/^(#{1,6})\s+(.+)$/);
       
       if (match) {
-        console.log(`Line ${index}: "${line}" matched as heading`);
         const level = match[1].length;
         const text = match[2].trim();
         
@@ -65,71 +59,68 @@ export default function TableOfContents({
           text,
           slug: slug || `heading-${idCounter}`,
         });
-      } else {
-        console.log(`Line ${index}: "${line}" did NOT match`);
       }
     });
     
-    console.log('TOC Items:', items);
     return items;
   }, [content]);
 
   const handleItemClick = (slug: string) => {
-    if (onItemClick) {
-      onItemClick(slug);
-    } else {
-      // Default behavior: scroll to heading in preview
-      // Look for the preview container first, then find the heading within it
-      const previewContainer = document.querySelector('.markdown-preview-container');
-      if (previewContainer) {
-        const headingElement = previewContainer.querySelector(`#${slug}`);
-        if (headingElement) {
-          headingElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
-        } else {
-          console.warn(`Heading with slug "${slug}" not found in preview`);
-        }
+    // Scroll to heading in preview
+    const previewContainer = document.querySelector('.markdown-preview-container');
+    if (previewContainer) {
+      const headingElement = previewContainer.querySelector(`#${slug}`);
+      if (headingElement) {
+        headingElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        // Close the modal after navigation
+        onClose();
       } else {
-        console.warn('Preview container not found. TOC navigation requires preview mode.');
+        console.warn(`Heading with slug "${slug}" not found in preview`);
       }
+    } else {
+      console.warn('Preview container not found. TOC navigation requires preview mode.');
     }
   };
 
-  if (tocItems.length === 0) {
-    return (
-      <div className={`p-4 text-sm text-muted-foreground ${className}`}>
-        <div className="flex items-center space-x-2 mb-2">
-          <List className="h-4 w-4" />
-          <span className="font-semibold">Table of Contents</span>
-        </div>
-        <p className="text-xs">No headings found in the document.</p>
-      </div>
-    );
-  }
-
   return (
-    <div className={`p-4 ${className}`}>
-      <div className="flex items-center space-x-2 mb-3">
-        <List className="h-4 w-4 text-primary" />
-        <span className="font-semibold text-sm">Table of Contents</span>
+    <Modal isOpen={isOpen} onClose={onClose} title="Table of Contents">
+      <div className={`max-h-[60vh] overflow-y-auto ${className}`}>
+        {tocItems.length === 0 ? (
+          <div className="p-4 text-center text-muted-foreground">
+            <List className="h-8 w-8 mx-auto mb-2 opacity-50" />
+            <p className="text-sm">No headings found in the document.</p>
+            <p className="text-xs mt-1">Add headings using # syntax to see them here.</p>
+          </div>
+        ) : (
+          <nav className="space-y-1 p-2">
+            {tocItems.map((item) => (
+              <button
+                key={item.id}
+                onClick={() => handleItemClick(item.slug)}
+                className="w-full text-left text-sm hover:bg-accent hover:text-accent-foreground rounded-md px-3 py-2 transition-colors group flex items-start"
+                style={{
+                  paddingLeft: `${0.75 + (item.level - 1) * 0.75}rem`,
+                }}
+              >
+                <ChevronRight className="h-4 w-4 mt-0.5 mr-2 opacity-50 group-hover:opacity-100 transition-opacity flex-shrink-0" />
+                <span className="flex-1 truncate" title={item.text}>
+                  {item.text}
+                </span>
+                <span className="text-xs text-muted-foreground ml-2">
+                  H{item.level}
+                </span>
+              </button>
+            ))}
+          </nav>
+        )}
       </div>
-      <nav className="space-y-1">
-        {tocItems.map((item) => (
-          <button
-            key={item.id}
-            onClick={() => handleItemClick(item.slug)}
-            className="w-full text-left text-sm hover:text-primary transition-colors group flex items-start"
-            style={{
-              paddingLeft: `${(item.level - 1) * 0.75}rem`,
-            }}
-          >
-            <ChevronRight className="h-3 w-3 mt-1 mr-1 opacity-0 group-hover:opacity-100 transition-opacity flex-shrink-0" />
-            <span className="truncate" title={item.text}>
-              {item.text}
-            </span>
-          </button>
-        ))}
-      </nav>
-    </div>
+      
+      {tocItems.length > 0 && (
+        <div className="mt-4 pt-4 border-t text-xs text-muted-foreground text-center">
+          Click any heading to navigate • ESC to close
+        </div>
+      )}
+    </Modal>
   );
 }
 

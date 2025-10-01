@@ -12,13 +12,15 @@ interface MainContentProps {
   viewMode: ViewMode;
   onViewModeChange: (mode: ViewMode) => void;
   content?: string;
+  onFullscreenChange?: (isFullscreen: boolean) => void;
 }
 
 export default function MainContent({ 
   children, 
   viewMode, 
   onViewModeChange,
-  content = ''
+  content = '',
+  onFullscreenChange
 }: MainContentProps) {
   const [isFullscreen, setIsFullscreen] = useState(false);
   const [showToc, setShowToc] = useState(false);
@@ -36,7 +38,9 @@ export default function MainContent({
   // Listen for fullscreen change events
   useEffect(() => {
     const handleFullscreenChange = () => {
-      setIsFullscreen(!!document.fullscreenElement);
+      const fullscreenState = !!document.fullscreenElement;
+      setIsFullscreen(fullscreenState);
+      onFullscreenChange?.(fullscreenState);
     };
 
     document.addEventListener('fullscreenchange', handleFullscreenChange);
@@ -50,7 +54,7 @@ export default function MainContent({
       document.removeEventListener('mozfullscreenchange', handleFullscreenChange);
       document.removeEventListener('MSFullscreenChange', handleFullscreenChange);
     };
-  }, []);
+  }, [onFullscreenChange]);
 
   const toggleFullscreen = async () => {
     try {
@@ -65,9 +69,9 @@ export default function MainContent({
   };
 
   return (
-    <div className={`flex flex-col flex-1 h-full ${isFullscreen ? 'fixed inset-0 z-50' : ''}`}>
+    <div className={`flex flex-col flex-1 h-full ${isFullscreen ? 'fixed inset-0 z-50 bg-background' : ''}`}>
       {/* Toolbar */}
-      <div className="flex h-10 items-center justify-between border-b bg-muted/50 px-4">
+      <div className={`flex h-10 items-center justify-between border-b px-4 ${isFullscreen ? 'bg-background' : 'bg-muted/50'}`}>
         <div className="flex items-center space-x-1">
           <button
             onClick={() => onViewModeChange('editor')}
@@ -138,18 +142,15 @@ export default function MainContent({
 
       {/* Content Area */}
       <div className="flex flex-1 min-h-0 main-content">
-        {/* Table of Contents Sidebar - Only show when preview is visible */}
-        {showToc && isPreviewVisible && (
-          <div className="w-full border-r bg-background overflow-y-auto flex-shrink-0">
-            <TableOfContents content={content} />
-          </div>
-        )}
-        
-        {/* Main Editor/Preview Area */}
-        <div className="flex-1 min-h-0">
-          {children}
-        </div>
+        {children}
       </div>
+
+      {/* Table of Contents Modal */}
+      <TableOfContents 
+        content={content}
+        isOpen={showToc && isPreviewVisible}
+        onClose={() => setShowToc(false)}
+      />
     </div>
   );
 }
