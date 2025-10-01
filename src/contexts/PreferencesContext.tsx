@@ -1,13 +1,13 @@
-'use client';
+"use client";
 
-import React, { createContext, useContext, useState, useEffect } from 'react';
-import { indexedDBService, UserPreferences } from '@/lib/indexedDB';
+import React, { createContext, useContext, useState, useEffect } from "react";
+import { indexedDBService, UserPreferences } from "@/lib/indexedDB";
 
 const defaultPreferences: UserPreferences = {
-  theme: 'light',
-  viewMode: 'split',
+  theme: "light",
+  viewMode: "split",
   fontSize: 14,
-  fontFamily: 'var(--font-mono)',
+  fontFamily: "var(--font-mono)",
   autoSave: true,
   autoSaveInterval: 2000,
   recentFiles: [],
@@ -21,10 +21,17 @@ interface PreferencesContextType {
   isLoading: boolean;
 }
 
-const PreferencesContext = createContext<PreferencesContextType | undefined>(undefined);
+const PreferencesContext = createContext<PreferencesContextType | undefined>(
+  undefined
+);
 
-export function PreferencesProvider({ children }: { children: React.ReactNode }) {
-  const [preferences, setPreferences] = useState<UserPreferences>(defaultPreferences);
+export function PreferencesProvider({
+  children,
+}: {
+  children: React.ReactNode;
+}) {
+  const [preferences, setPreferences] =
+    useState<UserPreferences>(defaultPreferences);
   const [isLoading, setIsLoading] = useState(true);
 
   // Load preferences from IndexedDB on mount
@@ -37,15 +44,17 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
           setPreferences({ ...defaultPreferences, ...savedPreferences });
         }
       } catch (error) {
-        console.error('Failed to load preferences:', error);
+        console.error("Failed to load preferences:", error);
         // Fallback to localStorage if IndexedDB fails
-        const fallbackPrefs = localStorage.getItem('markdown-editor-preferences');
+        const fallbackPrefs = localStorage.getItem(
+          "markdown-editor-preferences"
+        );
         if (fallbackPrefs) {
           try {
             const parsed = JSON.parse(fallbackPrefs);
             setPreferences({ ...defaultPreferences, ...parsed });
           } catch (e) {
-            console.error('Failed to parse fallback preferences:', e);
+            console.error("Failed to parse fallback preferences:", e);
           }
         }
       } finally {
@@ -63,9 +72,12 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
         try {
           await indexedDBService.savePreferences(preferences);
         } catch (error) {
-          console.error('Failed to save preferences to IndexedDB:', error);
+          console.error("Failed to save preferences to IndexedDB:", error);
           // Fallback to localStorage
-          localStorage.setItem('markdown-editor-preferences', JSON.stringify(preferences));
+          localStorage.setItem(
+            "markdown-editor-preferences",
+            JSON.stringify(preferences)
+          );
         }
       };
 
@@ -82,7 +94,9 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
   };
 
   return (
-    <PreferencesContext.Provider value={{ preferences, updatePreferences, resetPreferences, isLoading }}>
+    <PreferencesContext.Provider
+      value={{ preferences, updatePreferences, resetPreferences, isLoading }}
+    >
       {children}
     </PreferencesContext.Provider>
   );
@@ -91,7 +105,7 @@ export function PreferencesProvider({ children }: { children: React.ReactNode })
 export function usePreferences() {
   const context = useContext(PreferencesContext);
   if (context === undefined) {
-    throw new Error('usePreferences must be used within a PreferencesProvider');
+    throw new Error("usePreferences must be used within a PreferencesProvider");
   }
   return context;
 }

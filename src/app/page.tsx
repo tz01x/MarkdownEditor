@@ -1,17 +1,17 @@
-'use client';
+"use client";
 
-import { useState, useRef, useEffect } from 'react';
-import Header from '@/components/layout/Header';
-import Sidebar from '@/components/layout/Sidebar';
-import MainContent from '@/components/layout/MainContent';
-import EditorContainer from '@/components/editor/EditorContainer';
-import { Card, CardContent } from '@/components/ui/Card';
-import BackupRestoreModal from '@/components/ui/BackupRestoreModal';
-import FilePreviewModal from '@/components/ui/FilePreviewModal';
-import DragDropZone from '@/components/ui/DragDropZone';
-import { ToastContainer } from '@/components/ui/Toast';
-import { FileProvider, useFiles } from '@/contexts/FileContext';
-import { usePreferences } from '@/contexts/PreferencesContext';
+import { useState, useRef, useEffect } from "react";
+import Header from "@/components/layout/Header";
+import Sidebar from "@/components/layout/Sidebar";
+import MainContent from "@/components/layout/MainContent";
+import EditorContainer from "@/components/editor/EditorContainer";
+import { Card, CardContent } from "@/components/ui/Card";
+import BackupRestoreModal from "@/components/ui/BackupRestoreModal";
+import FilePreviewModal from "@/components/ui/FilePreviewModal";
+import DragDropZone from "@/components/ui/DragDropZone";
+import { ToastContainer } from "@/components/ui/Toast";
+import { FileProvider, useFiles } from "@/contexts/FileContext";
+import { usePreferences } from "@/contexts/PreferencesContext";
 
 function MarkdownEditor() {
   const {
@@ -34,12 +34,16 @@ function MarkdownEditor() {
     toasts,
     removeToast,
   } = useFiles();
-  
+
   const { preferences, updatePreferences } = usePreferences();
-  const [viewMode, setViewMode] = useState<'editor' | 'preview' | 'split'>(preferences.viewMode);
+  const [viewMode, setViewMode] = useState<"editor" | "preview" | "split">(
+    preferences.viewMode
+  );
   const [showBackupModal, setShowBackupModal] = useState(false);
   const [showFilePreview, setShowFilePreview] = useState(false);
-  const [previewFiles, setPreviewFiles] = useState<Array<{ file: File; content: string }>>([]);
+  const [previewFiles, setPreviewFiles] = useState<
+    Array<{ file: File; content: string }>
+  >([]);
   const [isFullscreen, setIsFullscreen] = useState(false);
   const fileInputRef = useRef<HTMLInputElement>(null);
 
@@ -64,17 +68,19 @@ function MarkdownEditor() {
     fileInputRef.current?.click();
   };
 
-  const handleFileUpload = async (event: React.ChangeEvent<HTMLInputElement>) => {
+  const handleFileUpload = async (
+    event: React.ChangeEvent<HTMLInputElement>
+  ) => {
     const file = event.target.files?.[0];
-    if (file && file.type === 'text/markdown') {
+    if (file && file.type === "text/markdown") {
       try {
         await importFile(file);
       } catch (error) {
-        console.error('Failed to import file:', error);
+        console.error("Failed to import file:", error);
       }
     }
     // Reset input
-    event.target.value = '';
+    event.target.value = "";
   };
 
   const handleSave = () => {
@@ -105,14 +111,14 @@ function MarkdownEditor() {
     }
   };
 
-  const handleViewModeChange = (mode: 'editor' | 'preview' | 'split') => {
+  const handleViewModeChange = (mode: "editor" | "preview" | "split") => {
     setViewMode(mode);
     updatePreferences({ viewMode: mode });
   };
 
   const handleRenameCurrent = () => {
     if (!currentFileId || !currentFile) return;
-    const newName = prompt('Rename file', currentFile.name)?.trim();
+    const newName = prompt("Rename file", currentFile.name)?.trim();
     if (newName && newName !== currentFile.name) {
       renameFile(currentFileId, newName);
     }
@@ -125,7 +131,7 @@ function MarkdownEditor() {
     const filePreviewPromises = droppedFiles.map(file => {
       return new Promise<{ file: File; content: string }>((resolve, reject) => {
         const reader = new FileReader();
-        reader.onload = (e) => {
+        reader.onload = e => {
           const content = e.target?.result as string;
           resolve({ file, content });
         };
@@ -139,11 +145,13 @@ function MarkdownEditor() {
       setPreviewFiles(previews);
       setShowFilePreview(true);
     } catch (error) {
-      console.error('Failed to read files:', error);
+      console.error("Failed to read files:", error);
     }
   };
 
-  const handleImportFiles = async (filesToImport: Array<{ file: File; content: string }>) => {
+  const handleImportFiles = async (
+    filesToImport: Array<{ file: File; content: string }>
+  ) => {
     const files = filesToImport.map(fp => fp.file);
     await importMultipleFiles(files);
     setShowFilePreview(false);
@@ -166,13 +174,13 @@ function MarkdownEditor() {
           pdfProgress={pdfProgress}
         />
       )}
-      
+
       <div className="flex flex-1 min-h-0 main-content-wrapper">
         {/* Hide sidebar in fullscreen mode */}
         {!isFullscreen && (
           <Sidebar
             files={files}
-            currentFileId={currentFileId}
+            currentFileId={currentFileId || undefined}
             onFileSelect={handleFileSelect}
             onNewFile={handleNewFile}
             onDeleteFile={handleDeleteFile}
@@ -181,11 +189,11 @@ function MarkdownEditor() {
             onDownloadAll={handleDownloadAll}
           />
         )}
-        
+
         <MainContent
           viewMode={viewMode}
           onViewModeChange={handleViewModeChange}
-          content={currentFile?.content || ''}
+          content={currentFile?.content || ""}
           onFullscreenChange={setIsFullscreen}
         >
           {currentFile ? (
@@ -201,9 +209,12 @@ function MarkdownEditor() {
               <div className="w-full max-w-3xl space-y-8">
                 <Card className="w-full">
                   <CardContent className="p-8 text-center">
-                    <h2 className="text-2xl font-bold mb-4">Welcome to Markdown Editor</h2>
+                    <h2 className="text-2xl font-bold mb-4">
+                      Welcome to Markdown Editor
+                    </h2>
                     <p className="text-muted-foreground mb-6">
-                      A modern, feature-rich markdown editor with live preview and export capabilities.
+                      A modern, feature-rich markdown editor with live preview
+                      and export capabilities.
                     </p>
                     <div className="space-y-2 text-sm text-muted-foreground">
                       <p>• Create and edit markdown files</p>
@@ -231,7 +242,7 @@ function MarkdownEditor() {
             </div>
           )}
         </MainContent>
-        </div>
+      </div>
 
       {/* Hidden file input for import */}
       <input
@@ -258,12 +269,9 @@ function MarkdownEditor() {
         files={previewFiles}
         onImport={handleImportFiles}
       />
-      
+
       {/* Toast Notifications */}
-      <ToastContainer
-        toasts={toasts}
-        onClose={removeToast}
-      />
+      <ToastContainer toasts={toasts} onClose={removeToast} />
     </div>
   );
 }

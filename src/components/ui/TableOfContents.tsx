@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useMemo } from 'react';
-import { List, ChevronRight, X } from 'lucide-react';
-import Modal from './Modal';
+import { useMemo } from "react";
+import { List, ChevronRight, X } from "lucide-react";
+import Modal from "./Modal";
 
 interface TocItem {
   id: string;
@@ -18,39 +18,39 @@ interface TableOfContentsProps {
   className?: string;
 }
 
-export default function TableOfContents({ 
-  content, 
+export default function TableOfContents({
+  content,
   isOpen,
   onClose,
-  className = '',
+  className = "",
 }: TableOfContentsProps) {
   const tocItems = useMemo(() => {
     if (!content) {
       return [];
     }
-    
+
     const items: TocItem[] = [];
-    const lines = content.split('\n');
+    const lines = content.split("\n");
     let idCounter = 0;
 
-    lines.forEach((line) => {
+    lines.forEach(line => {
       // Trim the line to remove any leading/trailing whitespace
       const trimmedLine = line.trim();
-      
+
       // Match markdown headings (# to ######)
       // More robust pattern that handles various whitespace
       const match = trimmedLine.match(/^(#{1,6})\s+(.+)$/);
-      
+
       if (match) {
         const level = match[1].length;
         const text = match[2].trim();
-        
+
         // Create a slug from the heading text
         const slug = text
           .toLowerCase()
-          .replace(/[^a-z0-9\s-]/g, '')
-          .replace(/\s+/g, '-')
-          .replace(/-+/g, '-')
+          .replace(/[^a-z0-9\s-]/g, "")
+          .replace(/\s+/g, "-")
+          .replace(/-+/g, "-")
           .trim();
 
         items.push({
@@ -61,24 +61,28 @@ export default function TableOfContents({
         });
       }
     });
-    
+
     return items;
   }, [content]);
 
   const handleItemClick = (slug: string) => {
     // Scroll to heading in preview
-    const previewContainer = document.querySelector('.markdown-preview-container');
+    const previewContainer = document.querySelector(
+      ".markdown-preview-container"
+    );
     if (previewContainer) {
       const headingElement = previewContainer.querySelector(`#${slug}`);
       if (headingElement) {
-        headingElement.scrollIntoView({ behavior: 'smooth', block: 'start' });
+        headingElement.scrollIntoView({ behavior: "smooth", block: "start" });
         // Close the modal after navigation
         onClose();
       } else {
         console.warn(`Heading with slug "${slug}" not found in preview`);
       }
     } else {
-      console.warn('Preview container not found. TOC navigation requires preview mode.');
+      console.warn(
+        "Preview container not found. TOC navigation requires preview mode."
+      );
     }
   };
 
@@ -89,11 +93,13 @@ export default function TableOfContents({
           <div className="p-4 text-center text-muted-foreground">
             <List className="h-8 w-8 mx-auto mb-2 opacity-50" />
             <p className="text-sm">No headings found in the document.</p>
-            <p className="text-xs mt-1">Add headings using # syntax to see them here.</p>
+            <p className="text-xs mt-1">
+              Add headings using # syntax to see them here.
+            </p>
           </div>
         ) : (
           <nav className="space-y-1 p-2">
-            {tocItems.map((item) => (
+            {tocItems.map(item => (
               <button
                 key={item.id}
                 onClick={() => handleItemClick(item.slug)}
@@ -114,7 +120,7 @@ export default function TableOfContents({
           </nav>
         )}
       </div>
-      
+
       {tocItems.length > 0 && (
         <div className="mt-4 pt-4 border-t text-xs text-muted-foreground text-center">
           Click any heading to navigate • ESC to close
@@ -123,4 +129,3 @@ export default function TableOfContents({
     </Modal>
   );
 }
-

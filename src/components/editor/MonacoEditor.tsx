@@ -1,8 +1,8 @@
-'use client';
+"use client";
 
-import { useEffect, useRef, useState, useCallback } from 'react';
-import { Editor } from '@monaco-editor/react';
-import { useTheme } from '@/contexts/ThemeContext';
+import { useEffect, useRef, useState, useCallback } from "react";
+import { Editor } from "@monaco-editor/react";
+import { useTheme } from "@/contexts/ThemeContext";
 
 interface MonacoEditorProps {
   value: string;
@@ -18,7 +18,7 @@ export default function MonacoEditor({
   onChange,
   onSave,
   onScroll,
-  className = '',
+  className = "",
   readOnly = false,
 }: MonacoEditorProps) {
   const { theme } = useTheme();
@@ -30,31 +30,31 @@ export default function MonacoEditor({
     setIsEditorReady(true);
 
     // Configure markdown language
-    monaco.languages.register({ id: 'markdown' });
-    
+    monaco.languages.register({ id: "markdown" });
+
     // Set up markdown language configuration
-    monaco.languages.setMonarchTokensProvider('markdown', {
+    monaco.languages.setMonarchTokensProvider("markdown", {
       tokenizer: {
         root: [
           // Headers
-          [/^#{1,6}\s+.*$/, 'keyword'],
+          [/^#{1,6}\s+.*$/, "keyword"],
           // Bold and italic
-          [/\*\*([^*]+)\*\*/, 'strong'],
-          [/\*([^*]+)\*/, 'emphasis'],
-          [/__([^_]+)__/, 'strong'],
-          [/_([^_]+)_/, 'emphasis'],
+          [/\*\*([^*]+)\*\*/, "strong"],
+          [/\*([^*]+)\*/, "emphasis"],
+          [/__([^_]+)__/, "strong"],
+          [/_([^_]+)_/, "emphasis"],
           // Code blocks
-          [/```[\s\S]*?```/, 'string'],
-          [/`[^`]+`/, 'string'],
+          [/```[\s\S]*?```/, "string"],
+          [/`[^`]+`/, "string"],
           // Links
-          [/\[([^\]]+)\]\([^)]+\)/, 'link'],
+          [/\[([^\]]+)\]\([^)]+\)/, "link"],
           // Lists
-          [/^\s*[-*+]\s+/, 'keyword'],
-          [/^\s*\d+\.\s+/, 'keyword'],
+          [/^\s*[-*+]\s+/, "keyword"],
+          [/^\s*\d+\.\s+/, "keyword"],
           // Blockquotes
-          [/^\s*>\s+/, 'comment'],
+          [/^\s*>\s+/, "comment"],
           // Horizontal rules
-          [/^[-*_]{3,}$/, 'keyword'],
+          [/^[-*_]{3,}$/, "keyword"],
         ],
       },
     });
@@ -62,17 +62,18 @@ export default function MonacoEditor({
     // Configure editor options
     editor.updateOptions({
       minimap: { enabled: true },
-      lineNumbers: 'on',
-      wordWrap: 'on',
+      lineNumbers: "on",
+      wordWrap: "on",
       folding: true,
       lineDecorationsWidth: 10,
       lineNumbersMinChars: 3,
       scrollBeyondLastLine: false,
       automaticLayout: true,
       fontSize: 14,
-      fontFamily: 'var(--font-mono), "Fira Code", "Cascadia Code", Consolas, monospace',
+      fontFamily:
+        'var(--font-mono), "Fira Code", "Cascadia Code", Consolas, monospace',
       fontLigatures: true,
-      cursorBlinking: 'blink',
+      cursorBlinking: "blink",
       cursorSmoothCaretAnimation: true,
       smoothScrolling: true,
       contextmenu: true,
@@ -83,9 +84,9 @@ export default function MonacoEditor({
         strings: false,
       },
       suggestOnTriggerCharacters: true,
-      acceptSuggestionOnEnter: 'on',
-      tabCompletion: 'on',
-      wordBasedSuggestions: 'off',
+      acceptSuggestionOnEnter: "on",
+      tabCompletion: "on",
+      wordBasedSuggestions: "off",
     });
 
     // Add keyboard shortcuts
@@ -94,27 +95,34 @@ export default function MonacoEditor({
     });
 
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyZ, () => {
-      editor.trigger('keyboard', 'undo', null);
+      editor.trigger("keyboard", "undo", null);
     });
 
-    editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyZ, () => {
-      editor.trigger('keyboard', 'redo', null);
-    });
+    editor.addCommand(
+      monaco.KeyMod.CtrlCmd | monaco.KeyMod.Shift | monaco.KeyCode.KeyZ,
+      () => {
+        editor.trigger("keyboard", "redo", null);
+      }
+    );
 
     // Add markdown-specific shortcuts
     editor.addCommand(monaco.KeyMod.CtrlCmd | monaco.KeyCode.KeyB, () => {
       const selection = editor.getSelection();
       const selectedText = editor.getModel()?.getValueInRange(selection);
       if (selectedText) {
-        editor.executeEdits('bold', [{
-          range: selection,
-          text: `**${selectedText}**`,
-        }]);
+        editor.executeEdits("bold", [
+          {
+            range: selection,
+            text: `**${selectedText}**`,
+          },
+        ]);
       } else {
-        editor.executeEdits('bold', [{
-          range: selection,
-          text: '**bold text**',
-        }]);
+        editor.executeEdits("bold", [
+          {
+            range: selection,
+            text: "**bold text**",
+          },
+        ]);
       }
     });
 
@@ -122,15 +130,19 @@ export default function MonacoEditor({
       const selection = editor.getSelection();
       const selectedText = editor.getModel()?.getValueInRange(selection);
       if (selectedText) {
-        editor.executeEdits('italic', [{
-          range: selection,
-          text: `*${selectedText}*`,
-        }]);
+        editor.executeEdits("italic", [
+          {
+            range: selection,
+            text: `*${selectedText}*`,
+          },
+        ]);
       } else {
-        editor.executeEdits('italic', [{
-          range: selection,
-          text: '*italic text*',
-        }]);
+        editor.executeEdits("italic", [
+          {
+            range: selection,
+            text: "*italic text*",
+          },
+        ]);
       }
     });
 
@@ -138,15 +150,19 @@ export default function MonacoEditor({
       const selection = editor.getSelection();
       const selectedText = editor.getModel()?.getValueInRange(selection);
       if (selectedText) {
-        editor.executeEdits('link', [{
-          range: selection,
-          text: `[${selectedText}](url)`,
-        }]);
+        editor.executeEdits("link", [
+          {
+            range: selection,
+            text: `[${selectedText}](url)`,
+          },
+        ]);
       } else {
-        editor.executeEdits('link', [{
-          range: selection,
-          text: '[link text](url)',
-        }]);
+        editor.executeEdits("link", [
+          {
+            range: selection,
+            text: "[link text](url)",
+          },
+        ]);
       }
     });
 
@@ -159,11 +175,14 @@ export default function MonacoEditor({
     }
   };
 
-  const handleEditorChange = useCallback((value: string | undefined) => {
-    if (value !== undefined) {
-      onChange(value);
-    }
-  }, [onChange]);
+  const handleEditorChange = useCallback(
+    (value: string | undefined) => {
+      if (value !== undefined) {
+        onChange(value);
+      }
+    },
+    [onChange]
+  );
 
   return (
     <div className={`h-full monaco-editor-container ${className}`}>
@@ -173,15 +192,15 @@ export default function MonacoEditor({
         value={value}
         onChange={handleEditorChange}
         onMount={handleEditorDidMount}
-        theme={theme === 'dark' ? 'vs-dark' : 'light'}
+        theme={theme === "dark" ? "vs-dark" : "light"}
         options={{
           readOnly,
           selectOnLineNumbers: true,
-          renderLineHighlight: 'line',
+          renderLineHighlight: "line",
           minimap: { enabled: true },
           scrollbar: {
-            vertical: 'auto',
-            horizontal: 'auto',
+            vertical: "auto",
+            horizontal: "auto",
             verticalScrollbarSize: 8,
             horizontalScrollbarSize: 8,
           },

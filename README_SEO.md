@@ -5,6 +5,7 @@ This document explains the SEO optimizations implemented for the Markdown Editor
 ## 🎯 Implemented SEO Features
 
 ### 1. **Meta Tags** (`src/app/layout.tsx`)
+
 - **Title Tag**: Dynamic title with template support
 - **Meta Description**: Compelling description with keywords
 - **Keywords**: Comprehensive keyword list for search engines
@@ -12,6 +13,7 @@ This document explains the SEO optimizations implemented for the Markdown Editor
 - **Canonical URL**: Prevents duplicate content issues
 
 ### 2. **Open Graph Tags** (Social Media)
+
 - **og:type**: Website type
 - **og:title**: Optimized title for social sharing
 - **og:description**: Engaging description
@@ -20,6 +22,7 @@ This document explains the SEO optimizations implemented for the Markdown Editor
 - **og:site_name**: Site name
 
 ### 3. **Twitter Cards**
+
 - **twitter:card**: Large image summary
 - **twitter:title**: Twitter-optimized title
 - **twitter:description**: Twitter description
@@ -27,6 +30,7 @@ This document explains the SEO optimizations implemented for the Markdown Editor
 - **twitter:creator**: Twitter handle
 
 ### 4. **Structured Data (JSON-LD)**
+
 - **Schema.org WebApplication**: Rich search results
 - **Features List**: Searchable features
 - **Pricing Information**: Free application markup
@@ -34,6 +38,7 @@ This document explains the SEO optimizations implemented for the Markdown Editor
 - **Author Information**: Creator attribution
 
 ### 5. **PWA Manifest** (`public/manifest.json`)
+
 - **App Name & Description**: For install prompts
 - **Icons**: 192x192 and 512x512 icons
 - **Theme Colors**: Brand consistency
@@ -42,11 +47,13 @@ This document explains the SEO optimizations implemented for the Markdown Editor
 - **Shortcuts**: Quick actions
 
 ### 6. **Robots.txt** (`public/robots.txt`)
+
 - **Allow all crawlers**: Full indexing
 - **Sitemap reference**: Easy discovery
 - **API protection**: Prevent API crawling
 
 ### 7. **Sitemap** (`src/app/sitemap.ts`)
+
 - **XML Sitemap**: Automatic generation
 - **Update Frequency**: Change frequency hints
 - **Priority**: Page importance ranking
@@ -56,30 +63,35 @@ This document explains the SEO optimizations implemented for the Markdown Editor
 You need to create the following image assets:
 
 ### 1. **Open Graph Image**
+
 - Path: `public/og-image.png`
 - Size: 1200x630px
 - Format: PNG or JPG
 - Content: Screenshot or branded image of the editor
 
 ### 2. **PWA Icons**
+
 - `public/icon-192.png` (192x192px)
 - `public/icon-512.png` (512x512px)
 - Format: PNG with transparency
 - Content: App logo/icon
 
 ### 3. **Apple Touch Icon**
+
 - Path: `public/apple-touch-icon.png`
 - Size: 180x180px
 - Format: PNG
 - Content: App icon for iOS devices
 
 ### 4. **Screenshots** (Optional)
+
 - `public/screenshot-desktop.png` (1280x720px)
 - `public/screenshot-mobile.png` (750x1334px)
 - Format: PNG or JPG
 - Content: App screenshots for PWA install
 
 ### 5. **Shortcut Icon** (Optional)
+
 - Path: `public/icon-new.png`
 - Size: 96x96px
 - Format: PNG
@@ -90,14 +102,17 @@ You need to create the following image assets:
 Replace the following placeholders in the code:
 
 ### In `src/app/layout.tsx`:
+
 1. **Domain URLs**: Replace `https://your-domain.com` with your actual domain
 2. **Author Name**: Replace `'Your Name'` with your name
 3. **Twitter Handle**: Replace `@yourusername` with your Twitter handle
 
 ### In `public/robots.txt`:
+
 1. **Sitemap URL**: Replace with your actual domain
 
 ### In `src/app/sitemap.ts`:
+
 1. **Base URL**: Replace with your actual domain
 
 ## 📊 SEO Best Practices Implemented
@@ -116,24 +131,29 @@ Replace the following placeholders in the code:
 ## 🚀 Testing Your SEO
 
 ### 1. **Google Search Console**
+
 - Submit your sitemap
 - Monitor indexing status
 - Check for errors
 
 ### 2. **Rich Results Test**
+
 - URL: https://search.google.com/test/rich-results
 - Test your structured data
 
 ### 3. **PageSpeed Insights**
+
 - URL: https://pagespeed.web.dev/
 - Test performance and SEO score
 
 ### 4. **Social Media Debuggers**
+
 - **Facebook**: https://developers.facebook.com/tools/debug/
 - **Twitter**: https://cards-dev.twitter.com/validator
 - **LinkedIn**: https://www.linkedin.com/post-inspector/
 
 ### 5. **Mobile-Friendly Test**
+
 - URL: https://search.google.com/test/mobile-friendly
 - Verify mobile responsiveness
 
@@ -152,7 +172,7 @@ Tips for creating effective OG images:
 
 1. **Size**: 1200x630px (Facebook/LinkedIn recommended)
 2. **Format**: PNG or JPG (PNG for transparency)
-3. **Content**: 
+3. **Content**:
    - Include app name/logo
    - Show a preview of the editor
    - Use brand colors
@@ -183,4 +203,3 @@ Tips for creating effective OG images:
 - [Open Graph Protocol](https://ogp.me/)
 - [Twitter Cards Guide](https://developer.twitter.com/en/docs/twitter-for-websites/cards/overview/abouts-cards)
 - [Web.dev SEO Guide](https://web.dev/lighthouse-seo/)
-

@@ -1,7 +1,14 @@
-'use client';
+"use client";
 
-import { FileText, Plus, Trash2, FolderOpen, Pencil, Download } from 'lucide-react';
-import { useState } from 'react';
+import {
+  FileText,
+  Plus,
+  Trash2,
+  FolderOpen,
+  Pencil,
+  Download,
+} from "lucide-react";
+import { useState } from "react";
 
 interface FileItem {
   id: string;
@@ -32,17 +39,21 @@ export default function Sidebar({
 }: SidebarProps) {
   const [isCollapsed, setIsCollapsed] = useState(false);
 
-  const sortedFiles = [...files].sort((a, b) => 
-    b.lastModified.getTime() - a.lastModified.getTime()
+  const sortedFiles = [...files].sort(
+    (a, b) => b.lastModified.getTime() - a.lastModified.getTime()
   );
 
   return (
-    <aside className={`${isCollapsed ? 'w-12' : 'w-64'} border-r bg-background transition-all duration-300`}>
+    <aside
+      className={`${isCollapsed ? "w-12" : "w-64"} border-r bg-background transition-all duration-300`}
+    >
       <div className="flex h-full flex-col">
         {/* Sidebar Header */}
         <div className="flex h-12 items-center justify-between border-b px-4">
           {!isCollapsed && (
-            <h2 className="text-sm font-semibold text-muted-foreground">Files</h2>
+            <h2 className="text-sm font-semibold text-muted-foreground">
+              Files
+            </h2>
           )}
           <button
             onClick={() => setIsCollapsed(!isCollapsed)}
@@ -86,11 +97,13 @@ export default function Sidebar({
             </div>
           ) : (
             <div className="space-y-1 p-2">
-              {sortedFiles.map((file) => (
+              {sortedFiles.map(file => (
                 <div
                   key={file.id}
                   className={`group flex items-center justify-between rounded-md px-3 py-2 text-sm transition-colors hover:bg-accent hover:text-accent-foreground cursor-pointer ${
-                    currentFileId === file.id ? 'bg-accent text-accent-foreground' : ''
+                    currentFileId === file.id
+                      ? "bg-accent text-accent-foreground"
+                      : ""
                   }`}
                   onClick={() => onFileSelect(file.id)}
                 >
@@ -101,9 +114,12 @@ export default function Sidebar({
                   {!isCollapsed && (
                     <div className="flex items-center space-x-1 opacity-0 group-hover:opacity-100 transition-opacity">
                       <button
-                        onClick={(e) => {
+                        onClick={e => {
                           e.stopPropagation();
-                          const newName = prompt('Rename file', file.name)?.trim();
+                          const newName = prompt(
+                            "Rename file",
+                            file.name
+                          )?.trim();
                           if (newName && newName !== file.name) {
                             onRenameFile(file.id, newName);
                           }
@@ -114,7 +130,7 @@ export default function Sidebar({
                         <Pencil className="h-3 w-3" />
                       </button>
                       <button
-                        onClick={(e) => {
+                        onClick={e => {
                           e.stopPropagation();
                           onDeleteFile(file.id);
                         }}
@@ -138,7 +154,7 @@ export default function Sidebar({
               Recent Files
             </h3>
             <div className="space-y-1">
-              {sortedFiles.slice(0, 3).map((file) => (
+              {sortedFiles.slice(0, 3).map(file => (
                 <div
                   key={`recent-${file.id}`}
                   className="flex items-center space-x-2 rounded-md px-2 py-1 text-xs hover:bg-accent hover:text-accent-foreground cursor-pointer"

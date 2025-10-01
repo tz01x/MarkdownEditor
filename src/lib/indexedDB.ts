@@ -8,8 +8,8 @@ export interface FileRecord {
 }
 
 export interface UserPreferences {
-  theme: 'light' | 'dark';
-  viewMode: 'editor' | 'preview' | 'split';
+  theme: "light" | "dark";
+  viewMode: "editor" | "preview" | "split";
   fontSize: number;
   fontFamily: string;
   autoSave: boolean;
@@ -19,7 +19,7 @@ export interface UserPreferences {
 }
 
 class IndexedDBService {
-  private dbName = 'MarkdownEditorDB';
+  private dbName = "MarkdownEditorDB";
   private version = 1;
   private db: IDBDatabase | null = null;
 
@@ -33,26 +33,30 @@ class IndexedDBService {
         resolve();
       };
 
-      request.onupgradeneeded = (event) => {
+      request.onupgradeneeded = event => {
         const db = (event.target as IDBOpenDBRequest).result;
-        
+
         // Create files store
-        if (!db.objectStoreNames.contains('files')) {
-          const filesStore = db.createObjectStore('files', { keyPath: 'id' });
-          filesStore.createIndex('name', 'name', { unique: false });
-          filesStore.createIndex('lastModified', 'lastModified', { unique: false });
-          filesStore.createIndex('createdAt', 'createdAt', { unique: false });
+        if (!db.objectStoreNames.contains("files")) {
+          const filesStore = db.createObjectStore("files", { keyPath: "id" });
+          filesStore.createIndex("name", "name", { unique: false });
+          filesStore.createIndex("lastModified", "lastModified", {
+            unique: false,
+          });
+          filesStore.createIndex("createdAt", "createdAt", { unique: false });
         }
 
         // Create preferences store
-        if (!db.objectStoreNames.contains('preferences')) {
-          db.createObjectStore('preferences', { keyPath: 'key' });
+        if (!db.objectStoreNames.contains("preferences")) {
+          db.createObjectStore("preferences", { keyPath: "key" });
         }
 
         // Create backups store
-        if (!db.objectStoreNames.contains('backups')) {
-          const backupsStore = db.createObjectStore('backups', { keyPath: 'id' });
-          backupsStore.createIndex('timestamp', 'timestamp', { unique: false });
+        if (!db.objectStoreNames.contains("backups")) {
+          const backupsStore = db.createObjectStore("backups", {
+            keyPath: "id",
+          });
+          backupsStore.createIndex("timestamp", "timestamp", { unique: false });
         }
       };
     });
@@ -63,7 +67,7 @@ class IndexedDBService {
       await this.init();
     }
     if (!this.db) {
-      throw new Error('Failed to initialize IndexedDB');
+      throw new Error("Failed to initialize IndexedDB");
     }
     return this.db;
   }
@@ -71,8 +75,8 @@ class IndexedDBService {
   // File operations
   async saveFile(file: FileRecord): Promise<void> {
     const db = await this.ensureDB();
-    const transaction = db.transaction(['files'], 'readwrite');
-    const store = transaction.objectStore('files');
+    const transaction = db.transaction(["files"], "readwrite");
+    const store = transaction.objectStore("files");
     await new Promise<void>((resolve, reject) => {
       const request = store.put(file);
       request.onsuccess = () => resolve();
@@ -82,8 +86,8 @@ class IndexedDBService {
 
   async getFile(id: string): Promise<FileRecord | null> {
     const db = await this.ensureDB();
-    const transaction = db.transaction(['files'], 'readonly');
-    const store = transaction.objectStore('files');
+    const transaction = db.transaction(["files"], "readonly");
+    const store = transaction.objectStore("files");
     return new Promise<FileRecord | null>((resolve, reject) => {
       const request = store.get(id);
       request.onsuccess = () => resolve(request.result || null);
@@ -93,8 +97,8 @@ class IndexedDBService {
 
   async getAllFiles(): Promise<FileRecord[]> {
     const db = await this.ensureDB();
-    const transaction = db.transaction(['files'], 'readonly');
-    const store = transaction.objectStore('files');
+    const transaction = db.transaction(["files"], "readonly");
+    const store = transaction.objectStore("files");
     return new Promise<FileRecord[]>((resolve, reject) => {
       const request = store.getAll();
       request.onsuccess = () => resolve(request.result || []);
@@ -104,8 +108,8 @@ class IndexedDBService {
 
   async deleteFile(id: string): Promise<void> {
     const db = await this.ensureDB();
-    const transaction = db.transaction(['files'], 'readwrite');
-    const store = transaction.objectStore('files');
+    const transaction = db.transaction(["files"], "readwrite");
+    const store = transaction.objectStore("files");
     await new Promise<void>((resolve, reject) => {
       const request = store.delete(id);
       request.onsuccess = () => resolve();
@@ -115,8 +119,8 @@ class IndexedDBService {
 
   async clearAllFiles(): Promise<void> {
     const db = await this.ensureDB();
-    const transaction = db.transaction(['files'], 'readwrite');
-    const store = transaction.objectStore('files');
+    const transaction = db.transaction(["files"], "readwrite");
+    const store = transaction.objectStore("files");
     await new Promise<void>((resolve, reject) => {
       const request = store.clear();
       request.onsuccess = () => resolve();
@@ -127,10 +131,10 @@ class IndexedDBService {
   // Preferences operations
   async savePreferences(preferences: UserPreferences): Promise<void> {
     const db = await this.ensureDB();
-    const transaction = db.transaction(['preferences'], 'readwrite');
-    const store = transaction.objectStore('preferences');
+    const transaction = db.transaction(["preferences"], "readwrite");
+    const store = transaction.objectStore("preferences");
     await new Promise<void>((resolve, reject) => {
-      const request = store.put({ key: 'userPreferences', ...preferences });
+      const request = store.put({ key: "userPreferences", ...preferences });
       request.onsuccess = () => resolve();
       request.onerror = () => reject(request.error);
     });
@@ -138,10 +142,10 @@ class IndexedDBService {
 
   async getPreferences(): Promise<UserPreferences | null> {
     const db = await this.ensureDB();
-    const transaction = db.transaction(['preferences'], 'readonly');
-    const store = transaction.objectStore('preferences');
+    const transaction = db.transaction(["preferences"], "readonly");
+    const store = transaction.objectStore("preferences");
     return new Promise<UserPreferences | null>((resolve, reject) => {
-      const request = store.get('userPreferences');
+      const request = store.get("userPreferences");
       request.onsuccess = () => {
         const result = request.result;
         if (result) {
@@ -162,12 +166,12 @@ class IndexedDBService {
       id: backupId,
       timestamp: Date.now(),
       files: files,
-      version: '1.0'
+      version: "1.0",
     };
 
     const db = await this.ensureDB();
-    const transaction = db.transaction(['backups'], 'readwrite');
-    const store = transaction.objectStore('backups');
+    const transaction = db.transaction(["backups"], "readwrite");
+    const store = transaction.objectStore("backups");
     await new Promise<void>((resolve, reject) => {
       const request = store.put(backup);
       request.onsuccess = () => resolve();
@@ -177,17 +181,21 @@ class IndexedDBService {
     return backupId;
   }
 
-  async getBackups(): Promise<Array<{ id: string; timestamp: number; version: string }>> {
+  async getBackups(): Promise<
+    Array<{ id: string; timestamp: number; version: string }>
+  > {
     const db = await this.ensureDB();
-    const transaction = db.transaction(['backups'], 'readonly');
-    const store = transaction.objectStore('backups');
-    return new Promise<Array<{ id: string; timestamp: number; version: string }>>((resolve, reject) => {
+    const transaction = db.transaction(["backups"], "readonly");
+    const store = transaction.objectStore("backups");
+    return new Promise<
+      Array<{ id: string; timestamp: number; version: string }>
+    >((resolve, reject) => {
       const request = store.getAll();
       request.onsuccess = () => {
         const backups = request.result.map(backup => ({
           id: backup.id,
           timestamp: backup.timestamp,
-          version: backup.version
+          version: backup.version,
         }));
         resolve(backups.sort((a, b) => b.timestamp - a.timestamp));
       };
@@ -197,8 +205,8 @@ class IndexedDBService {
 
   async restoreBackup(backupId: string): Promise<FileRecord[]> {
     const db = await this.ensureDB();
-    const transaction = db.transaction(['backups'], 'readonly');
-    const store = transaction.objectStore('backups');
+    const transaction = db.transaction(["backups"], "readonly");
+    const store = transaction.objectStore("backups");
     return new Promise<FileRecord[]>((resolve, reject) => {
       const request = store.get(backupId);
       request.onsuccess = () => {
@@ -206,7 +214,7 @@ class IndexedDBService {
         if (backup && backup.files) {
           resolve(backup.files);
         } else {
-          reject(new Error('Backup not found or invalid'));
+          reject(new Error("Backup not found or invalid"));
         }
       };
       request.onerror = () => reject(request.error);
@@ -215,8 +223,8 @@ class IndexedDBService {
 
   async deleteBackup(backupId: string): Promise<void> {
     const db = await this.ensureDB();
-    const transaction = db.transaction(['backups'], 'readwrite');
-    const store = transaction.objectStore('backups');
+    const transaction = db.transaction(["backups"], "readwrite");
+    const store = transaction.objectStore("backups");
     await new Promise<void>((resolve, reject) => {
       const request = store.delete(backupId);
       request.onsuccess = () => resolve();
@@ -225,21 +233,27 @@ class IndexedDBService {
   }
 
   // Export/Import operations
-  async exportData(): Promise<{ files: FileRecord[]; preferences: UserPreferences | null }> {
+  async exportData(): Promise<{
+    files: FileRecord[];
+    preferences: UserPreferences | null;
+  }> {
     const files = await this.getAllFiles();
     const preferences = await this.getPreferences();
     return { files, preferences };
   }
 
-  async importData(data: { files: FileRecord[]; preferences: UserPreferences | null }): Promise<void> {
+  async importData(data: {
+    files: FileRecord[];
+    preferences: UserPreferences | null;
+  }): Promise<void> {
     // Clear existing data
     await this.clearAllFiles();
-    
+
     // Import files
     for (const file of data.files) {
       await this.saveFile(file);
     }
-    
+
     // Import preferences
     if (data.preferences) {
       await this.savePreferences(data.preferences);
@@ -248,11 +262,11 @@ class IndexedDBService {
 
   // Utility methods
   async getStorageSize(): Promise<{ used: number; available: number }> {
-    if ('storage' in navigator && 'estimate' in navigator.storage) {
+    if ("storage" in navigator && "estimate" in navigator.storage) {
       const estimate = await navigator.storage.estimate();
       return {
         used: estimate.usage || 0,
-        available: estimate.quota || 0
+        available: estimate.quota || 0,
       };
     }
     return { used: 0, available: 0 };
@@ -261,18 +275,18 @@ class IndexedDBService {
   async clearAllData(): Promise<void> {
     await this.clearAllFiles();
     const db = await this.ensureDB();
-    const transaction = db.transaction(['preferences', 'backups'], 'readwrite');
+    const transaction = db.transaction(["preferences", "backups"], "readwrite");
     await Promise.all([
       new Promise<void>((resolve, reject) => {
-        const request = transaction.objectStore('preferences').clear();
+        const request = transaction.objectStore("preferences").clear();
         request.onsuccess = () => resolve();
         request.onerror = () => reject(request.error);
       }),
       new Promise<void>((resolve, reject) => {
-        const request = transaction.objectStore('backups').clear();
+        const request = transaction.objectStore("backups").clear();
         request.onsuccess = () => resolve();
         request.onerror = () => reject(request.error);
-      })
+      }),
     ]);
   }
 }

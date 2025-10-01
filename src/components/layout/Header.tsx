@@ -1,10 +1,19 @@
-'use client';
+"use client";
 
-import { Moon, Sun, FileText, Download, Save, HardDrive, Pencil, FileDown } from 'lucide-react';
-import { useTheme } from '@/contexts/ThemeContext';
-import LoadingSpinner from '@/components/ui/LoadingSpinner';
-import ProgressIndicator from '@/components/ui/ProgressIndicator';
-import { PDFGenerationProgress } from '@/lib/pdfGenerator';
+import {
+  Moon,
+  Sun,
+  FileText,
+  Download,
+  Save,
+  HardDrive,
+  Pencil,
+  FileDown,
+} from "lucide-react";
+import { useTheme } from "@/contexts/ThemeContext";
+import LoadingSpinner from "@/components/ui/LoadingSpinner";
+import ProgressIndicator from "@/components/ui/ProgressIndicator";
+import { PDFGenerationProgress } from "@/lib/pdfGenerator";
 
 interface HeaderProps {
   onNewFile: () => void;
@@ -18,7 +27,17 @@ interface HeaderProps {
   pdfProgress?: PDFGenerationProgress | null;
 }
 
-export default function Header({ onNewFile, onSave, onDownload, onDownloadPDF, onBackup, fileName, onRename, isExportingPDF = false, pdfProgress }: HeaderProps) {
+export default function Header({
+  onNewFile,
+  onSave,
+  onDownload,
+  onDownloadPDF,
+  onBackup,
+  fileName,
+  onRename,
+  isExportingPDF = false,
+  pdfProgress,
+}: HeaderProps) {
   const { theme, toggleTheme } = useTheme();
 
   return (
@@ -57,7 +76,7 @@ export default function Header({ onNewFile, onSave, onDownload, onDownloadPDF, o
               Rename
             </button>
           )}
-          
+
           <button
             onClick={onSave}
             className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 px-3"
@@ -65,7 +84,7 @@ export default function Header({ onNewFile, onSave, onDownload, onDownloadPDF, o
             <Save className="mr-2 h-4 w-4" />
             Save
           </button>
-          
+
           <button
             onClick={onDownload}
             className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 px-3"
@@ -73,7 +92,7 @@ export default function Header({ onNewFile, onSave, onDownload, onDownloadPDF, o
             <Download className="mr-2 h-4 w-4" />
             Download
           </button>
-          
+
           <button
             onClick={onDownloadPDF}
             disabled={isExportingPDF}
@@ -91,7 +110,7 @@ export default function Header({ onNewFile, onSave, onDownload, onDownloadPDF, o
               </>
             )}
           </button>
-          
+
           <button
             onClick={onBackup}
             className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 px-3"
@@ -107,7 +126,7 @@ export default function Header({ onNewFile, onSave, onDownload, onDownloadPDF, o
             className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 hover:bg-accent hover:text-accent-foreground h-9 w-9"
             aria-label="Toggle theme"
           >
-            {theme === 'light' ? (
+            {theme === "light" ? (
               <Moon className="h-4 w-4" />
             ) : (
               <Sun className="h-4 w-4" />
@@ -115,7 +134,7 @@ export default function Header({ onNewFile, onSave, onDownload, onDownloadPDF, o
           </button>
         </div>
       </div>
-      
+
       {/* PDF Progress Indicator */}
       {isExportingPDF && pdfProgress && (
         <div className="absolute top-14 left-0 right-0 bg-background/95 backdrop-blur border-b p-4 z-50">

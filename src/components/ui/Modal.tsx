@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import React, { useEffect } from 'react';
-import { X } from 'lucide-react';
-import { cn } from '@/lib/utils';
-import Button from './Button';
+import React, { useEffect } from "react";
+import { X } from "lucide-react";
+import { cn } from "@/lib/utils";
+import Button from "./Button";
 
 interface ModalProps {
   isOpen: boolean;
@@ -24,19 +24,19 @@ export default function Modal({
 }: ModalProps) {
   useEffect(() => {
     const handleEscape = (event: KeyboardEvent) => {
-      if (event.key === 'Escape') {
+      if (event.key === "Escape") {
         onClose();
       }
     };
 
     if (isOpen) {
-      document.addEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'hidden';
+      document.addEventListener("keydown", handleEscape);
+      document.body.style.overflow = "hidden";
     }
 
     return () => {
-      document.removeEventListener('keydown', handleEscape);
-      document.body.style.overflow = 'unset';
+      document.removeEventListener("keydown", handleEscape);
+      document.body.style.overflow = "unset";
     };
   }, [isOpen, onClose]);
 
@@ -49,20 +49,18 @@ export default function Modal({
         className="fixed inset-0 bg-black/50 backdrop-blur-sm"
         onClick={onClose}
       />
-      
+
       {/* Modal Content */}
       <div
         className={cn(
-          'relative w-full max-w-lg mx-4 bg-background border border-border rounded-lg shadow-lg',
+          "relative w-full max-w-lg mx-4 bg-background border border-border rounded-lg shadow-lg",
           className
         )}
       >
         {/* Header */}
         {(title || showCloseButton) && (
           <div className="flex items-center justify-between p-6 border-b border-border">
-            {title && (
-              <h2 className="text-lg font-semibold">{title}</h2>
-            )}
+            {title && <h2 className="text-lg font-semibold">{title}</h2>}
             {showCloseButton && (
               <Button
                 variant="ghost"
@@ -75,11 +73,9 @@ export default function Modal({
             )}
           </div>
         )}
-        
+
         {/* Content */}
-        <div className="p-6">
-          {children}
-        </div>
+        <div className="p-6">{children}</div>
       </div>
     </div>
   );

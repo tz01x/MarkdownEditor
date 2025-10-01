@@ -1,9 +1,9 @@
-'use client';
+"use client";
 
-import { useState } from 'react';
-import Modal from './Modal';
-import MarkdownPreview from '@/components/editor/MarkdownPreview';
-import { FileText, Check, X } from 'lucide-react';
+import { useState } from "react";
+import Modal from "./Modal";
+import MarkdownPreview from "@/components/editor/MarkdownPreview";
+import { FileText, Check, X } from "lucide-react";
 
 interface FilePreview {
   file: File;
@@ -55,7 +55,9 @@ export default function FilePreviewModal({
   };
 
   const currentFile = files[currentPreviewIndex];
-  const isCurrentFileSelected = currentFile ? selectedFiles.has(currentFile.file.name) : false;
+  const isCurrentFileSelected = currentFile
+    ? selectedFiles.has(currentFile.file.name)
+    : false;
 
   if (files.length === 0) {
     return null;
@@ -68,16 +70,18 @@ export default function FilePreviewModal({
         <div className="border-b pb-4 mb-4">
           <div className="flex items-center justify-between mb-3">
             <h3 className="text-sm font-semibold">
-              {files.length} file{files.length !== 1 ? 's' : ''} ready to import
+              {files.length} file{files.length !== 1 ? "s" : ""} ready to import
             </h3>
             <button
               onClick={toggleSelectAll}
               className="text-xs text-primary hover:underline"
             >
-              {selectedFiles.size === files.length ? 'Deselect All' : 'Select All'}
+              {selectedFiles.size === files.length
+                ? "Deselect All"
+                : "Select All"}
             </button>
           </div>
-          
+
           <div className="flex flex-wrap gap-2 max-h-32 overflow-y-auto">
             {files.map((filePreview, index) => {
               const isSelected = selectedFiles.has(filePreview.file.name);
@@ -89,23 +93,26 @@ export default function FilePreviewModal({
                   }}
                   className={`
                     flex items-center space-x-2 px-3 py-2 rounded-lg border text-sm transition-all
-                    ${currentPreviewIndex === index
-                      ? 'border-primary bg-primary/10'
-                      : 'border-border hover:border-primary/50'
+                    ${
+                      currentPreviewIndex === index
+                        ? "border-primary bg-primary/10"
+                        : "border-border hover:border-primary/50"
                     }
                   `}
                 >
                   <input
                     type="checkbox"
                     checked={isSelected}
-                    onChange={(e) => {
+                    onChange={e => {
                       e.stopPropagation();
                       toggleFileSelection(filePreview.file.name);
                     }}
                     className="h-4 w-4"
                   />
                   <FileText className="h-4 w-4" />
-                  <span className="truncate max-w-[200px]">{filePreview.file.name}</span>
+                  <span className="truncate max-w-[200px]">
+                    {filePreview.file.name}
+                  </span>
                   <span className="text-xs text-muted-foreground">
                     ({(filePreview.file.size / 1024).toFixed(1)} KB)
                   </span>
@@ -123,7 +130,7 @@ export default function FilePreviewModal({
                 <FileText className="h-5 w-5 text-primary" />
                 <h4 className="font-semibold">{currentFile.file.name}</h4>
               </div>
-              
+
               <div className="flex items-center space-x-2">
                 {currentPreviewIndex > 0 && (
                   <button
@@ -155,8 +162,8 @@ export default function FilePreviewModal({
             {/* File Info */}
             <div className="mt-3 text-xs text-muted-foreground flex items-center justify-between">
               <span>
-                Lines: {currentFile.content.split('\n').length} | 
-                Size: {(currentFile.file.size / 1024).toFixed(2)} KB
+                Lines: {currentFile.content.split("\n").length} | Size:{" "}
+                {(currentFile.file.size / 1024).toFixed(2)} KB
               </span>
               <span>
                 {currentPreviewIndex + 1} of {files.length}
@@ -168,9 +175,10 @@ export default function FilePreviewModal({
         {/* Actions */}
         <div className="flex justify-between items-center pt-4 mt-4 border-t">
           <span className="text-sm text-muted-foreground">
-            {selectedFiles.size} file{selectedFiles.size !== 1 ? 's' : ''} selected
+            {selectedFiles.size} file{selectedFiles.size !== 1 ? "s" : ""}{" "}
+            selected
           </span>
-          
+
           <div className="flex space-x-2">
             <button
               onClick={onClose}
@@ -185,7 +193,7 @@ export default function FilePreviewModal({
               className="inline-flex items-center justify-center rounded-md text-sm font-medium ring-offset-background transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring focus-visible:ring-offset-2 disabled:pointer-events-none disabled:opacity-50 bg-primary text-primary-foreground hover:bg-primary/90 h-9 px-4"
             >
               <Check className="mr-2 h-4 w-4" />
-              Import {selectedFiles.size > 0 ? `(${selectedFiles.size})` : ''}
+              Import {selectedFiles.size > 0 ? `(${selectedFiles.size})` : ""}
             </button>
           </div>
         </div>
@@ -193,4 +201,3 @@ export default function FilePreviewModal({
     </Modal>
   );
 }
-

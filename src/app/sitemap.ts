@@ -1,13 +1,13 @@
-import { MetadataRoute } from 'next';
+import { MetadataRoute } from "next";
 
 export default function sitemap(): MetadataRoute.Sitemap {
-  const baseUrl = 'https://your-domain.com'; // Replace with your actual domain
+  const baseUrl = "https://your-domain.com"; // Replace with your actual domain
 
   return [
     {
       url: baseUrl,
       lastModified: new Date(),
-      changeFrequency: 'monthly',
+      changeFrequency: "monthly",
       priority: 1,
     },
     // Add more pages here as your app grows
@@ -20,4 +20,3 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // },
   ];
 }
-
