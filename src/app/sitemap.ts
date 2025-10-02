@@ -21,3 +21,6 @@ export default function sitemap(): MetadataRoute.Sitemap {
     // },
   ];
 }
+
+// Ensure the sitemap is generated at build time
+export const dynamic = 'force-static';
